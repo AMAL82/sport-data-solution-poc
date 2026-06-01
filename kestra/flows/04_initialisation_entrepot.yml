@@ -1,0 +1,23 @@
+id: initialisation_entrepot
+namespace: sport.data.solution
+
+description: Réinitialise la base DuckDB. À utiliser avant une démonstration pour repartir d'un état propre.
+
+pluginDefaults:
+  - type: io.kestra.plugin.scripts.shell.Commands
+    values:
+      taskRunner:
+        type: io.kestra.plugin.core.runner.Process
+
+tasks:
+  - id: installer_dependances
+    type: io.kestra.plugin.scripts.shell.Commands
+    commands:
+      - pip install -q duckdb==1.1.3 pandas==2.2.3 openpyxl python-dotenv
+
+  - id: initialiser_entrepot
+    type: io.kestra.plugin.scripts.shell.Commands
+    env:
+      PYTHONPATH: /app/project
+    commands:
+      - python /app/project/src/utils/initialiser_entrepot.py --force

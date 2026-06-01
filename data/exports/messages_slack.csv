@@ -1,0 +1,6 @@
+id_message,id_activite,date_envoi,contenu_message,statut_envoi
+1,1,2026-06-01 17:45:35.381764,"Bravo Roger T. ! 2.0 km de natation réalisés 🏊 (""Séance tranquille"")",ENVOYE
+2,2,2026-06-01 17:45:35.794329,"Zen Roger T. ! 47 min de yoga pour recharger les batteries 🧘 (""Bonne séance"")",ENVOYE
+3,3,2026-06-01 17:45:36.227033,"Bravo Roger T. ! Une randonnée de 15.6 km terminée 🌄 (""Très bonne énergie"")",ENVOYE
+4,4,2026-06-01 17:45:36.61491,"Belle sortie vélo Roger T. : 18.4 km parcourus ! (""Vélo avec de bonnes sensations"")",ENVOYE
+5,5,2026-06-01 17:45:37.107147,"Bravo Roger T. ! 3.9 km de marche réalisés 🚶 (""Marche avec de bonnes sensations"")",ENVOYE

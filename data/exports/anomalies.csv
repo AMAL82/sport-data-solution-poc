@@ -1,0 +1,65 @@
+id_anomalie,id_salarie,id_activite,id_parametre,type_anomalie,description,niveau_gravite,statut,date_detection
+1,19841,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+2,56482,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+3,17757,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+4,17036,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+5,90284,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+6,18246,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+7,25701,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+8,99514,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+9,43124,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+10,84233,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+11,76341,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+12,22426,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+13,97309,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+14,39874,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+15,92736,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+16,76771,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+17,49804,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+18,20083,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+19,57202,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+20,27620,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+21,36981,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+22,89328,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+23,50309,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+24,32690,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+25,58045,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+26,29200,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+27,44927,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+28,76903,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+29,37830,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+30,54625,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+31,28529,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+32,77789,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+33,34382,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+34,60141,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+35,49419,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+36,41293,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+37,46903,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+38,78962,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+39,90207,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+40,48260,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+41,73367,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+42,59804,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+43,57589,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+44,20157,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+45,20377,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+46,88193,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+47,60948,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+48,56263,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+49,29450,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+50,31453,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+51,79919,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+52,42234,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+53,96558,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+54,19260,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+55,43965,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+56,18941,,1,frequence,Salarié sans activité sportive sur la période,FAIBLE,OUVERTE,2026-06-01 17:45:30.637
+57,28160,,1,wellness,Salarié proche du seuil de 15 activités bien-être,INFO,OUVERTE,2026-06-01 17:45:30.649
+58,16872,,1,wellness,Salarié proche du seuil de 15 activités bien-être,INFO,OUVERTE,2026-06-01 17:45:30.649
+59,66882,,1,wellness,Salarié proche du seuil de 15 activités bien-être,INFO,OUVERTE,2026-06-01 17:45:30.649
+60,60358,,1,wellness,Salarié proche du seuil de 15 activités bien-être,INFO,OUVERTE,2026-06-01 17:45:30.649
+61,46158,,1,wellness,Salarié proche du seuil de 15 activités bien-être,INFO,OUVERTE,2026-06-01 17:45:30.649
+62,23842,,1,wellness,Salarié proche du seuil de 15 activités bien-être,INFO,OUVERTE,2026-06-01 17:45:30.649
+63,42472,,1,wellness,Salarié proche du seuil de 15 activités bien-être,INFO,OUVERTE,2026-06-01 17:45:30.649
+64,90813,,1,wellness,Salarié proche du seuil de 15 activités bien-être,INFO,OUVERTE,2026-06-01 17:45:30.649

@@ -1,0 +1,60 @@
+id: rejeu_historique
+namespace: sport.data.solution
+
+description: Recalcule les KPI avec un nouveau taux de prime. Permet la comparaison multi-versions dans PowerBI.
+
+inputs:
+  - id: taux_prime
+    type: FLOAT
+    defaults: 0.05
+    description: "Taux de prime sportive (ex: 0.025 pour 2.5%)"
+  - id: seuil_wellness
+    type: INT
+    defaults: 15
+    description: "Nombre minimum d'activités pour les jours bien-être"
+  - id: max_km_marche
+    type: FLOAT
+    defaults: 15.0
+    description: "Distance max domicile-bureau à pied (km)"
+  - id: max_km_velo
+    type: FLOAT
+    defaults: 25.0
+    description: "Distance max domicile-bureau à vélo (km)"
+
+pluginDefaults:
+  - type: io.kestra.plugin.scripts.shell.Commands
+    values:
+      taskRunner:
+        type: io.kestra.plugin.core.runner.Process
+
+tasks:
+  - id: installer_dependances
+    type: io.kestra.plugin.scripts.shell.Commands
+    commands:
+      - pip install -q duckdb==1.1.3 pandas==2.2.3 openpyxl python-dotenv
+
+  - id: rejouer_historique
+    type: io.kestra.plugin.scripts.shell.Commands
+    env:
+      PYTHONPATH: /app/project
+    commands:
+      - >
+        python /app/project/src/utils/rejouer_historique.py
+        --taux-prime {{ inputs.taux_prime }}
+        --seuil-wellness {{ inputs.seuil_wellness }}
+        --max-km-marche {{ inputs.max_km_marche }}
+        --max-km-velo {{ inputs.max_km_velo }}
+
+  - id: recalculer_kpi
+    type: io.kestra.plugin.scripts.shell.Commands
+    env:
+      PYTHONPATH: /app/project
+    commands:
+      - python /app/project/src/metier/calculer_indicateurs_kpi.py
+
+  - id: exporter_powerbi
+    type: io.kestra.plugin.scripts.shell.Commands
+    env:
+      PYTHONPATH: /app/project
+    commands:
+      - python /app/project/src/export/exporter_donnees_powerbi.py

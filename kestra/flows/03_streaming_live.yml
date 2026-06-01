@@ -1,0 +1,41 @@
+id: streaming_live
+namespace: sport.data.solution
+
+description: Injecte une activité sportive dans Redpanda et envoie la notification Slack. Utilisé pour la démonstration live.
+
+inputs:
+  - id: id_activite
+    type: INT
+    required: false
+    description: "ID de l'activité à publier (optionnel — dernière activité si vide)"
+
+pluginDefaults:
+  - type: io.kestra.plugin.scripts.shell.Commands
+    values:
+      taskRunner:
+        type: io.kestra.plugin.core.runner.Process
+
+tasks:
+  - id: installer_dependances
+    type: io.kestra.plugin.scripts.shell.Commands
+    commands:
+      - pip install -q duckdb==1.1.3 python-dotenv requests confluent-kafka loguru
+
+  - id: produire_activite_redpanda
+    type: io.kestra.plugin.scripts.shell.Commands
+    env:
+      PYTHONPATH: /app/project
+    commands:
+      - >
+        python /app/project/src/streaming/produire_activites_redpanda.py
+        {% if inputs.id_activite is defined %}--id-activite {{ inputs.id_activite }}{% endif %}
+
+  - id: envoyer_message_slack
+    type: io.kestra.plugin.scripts.shell.Commands
+    env:
+      PYTHONPATH: /app/project
+    commands:
+      - >
+        python /app/project/src/streaming/envoyer_messages_slack.py
+        {% if inputs.id_activite is defined %}--id-activite {{ inputs.id_activite }}{% endif %}
+        --limite 1
