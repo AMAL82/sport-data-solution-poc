@@ -66,7 +66,7 @@ flowchart LR
 | Stockage analytique | DuckDB | Zéro infra, SQL complet, migrable vers PostgreSQL |
 | Contrôles qualité | SQL natif + audit log | Contrôles intégrés dans le pipeline, traçabilité complète |
 | Orchestration | Kestra | YAML natif, UI moderne, plus simple qu'Airflow pour un POC |
-| Dashboard | PowerBI | Demandé explicitement, rechargement en 1 clic |
+| Dashboard | PowerBI | Demandé explicitement, connexion directe DuckDB via script Python |
 | Notifications live | Slack Webhook | Sans OAuth, rapide à intégrer |
 | Logs | loguru | Logs horodatés lisibles à chaque étape |
 | Conteneurisation | Docker Compose | Déploiement local en 1 commande |
@@ -92,7 +92,7 @@ Données nettoyées et enrichies :
 
 ### Gold
 Tables analytiques finales :
-- KPI financiers (coût primes, coût wellness, coût global) ;
+- KPI financiers (coût primes, coût wellness, coût global) avec historique des versions ;
 - KPI sportifs (activités par sport, distances, durées) ;
 - anomalies détectées ;
 - messages Slack envoyés.
@@ -127,12 +127,14 @@ erDiagram
 sport-data-solution-poc/
 │
 ├── data/
-│   ├── input/          # Fichier RH Excel source
-│   ├── bronze/         # Données brutes DuckDB
-│   ├── silver/         # Données nettoyées DuckDB
-│   ├── gold/           # KPI et résultats DuckDB
-│   ├── exports/        # CSV/Parquet pour PowerBI
-│   └── cache/          # Cache géocodage
+│   ├── input/                  # Fichier RH Excel source
+│   ├── bronze/                 # Données brutes DuckDB
+│   ├── silver/                 # Données nettoyées DuckDB
+│   ├── gold/                   # KPI et résultats DuckDB
+│   ├── exports/                # CSV/Parquet (backup)
+│   ├── warehouse.duckdb        # Base principale (Kestra)
+│   ├── warehouse_powerbi.duckdb # Base dédiée PowerBI (lecture seule)
+│   └── cache/                  # Cache géocodage
 │
 ├── src/
 │   ├── ingestion/      # Chargement données RH
@@ -170,21 +172,26 @@ sport-data-solution-poc/
 
 - Docker Desktop
 - Python 3.10+
+- Power BI Desktop
+- Driver ODBC DuckDB : https://github.com/duckdb/duckdb-odbc/releases/latest
 
 ### Démarrage
 
 ```bash
 # 1. Cloner le repo
-git clone https://github.com/amalchoukri/sport-data-solution-poc.git
+git clone https://github.com/AMAL82/sport-data-solution-poc.git
 cd sport-data-solution-poc
 
 # 2. Copier et remplir les variables d'environnement
 cp .env.example .env
 
-# 3. Lancer les services (Redpanda, Spark, Kestra)
+# 3. Installer les dépendances Python
+pip install -r requirements.txt
+
+# 4. Lancer les services (Redpanda, Spark, Kestra)
 docker compose up -d
 
-# 4. Vérifier que tout est running
+# 5. Vérifier que tout est running
 docker compose ps
 ```
 
@@ -195,6 +202,7 @@ docker compose ps
 | `REDPANDA_BOOTSTRAP_SERVERS` | Adresse du broker Redpanda (défaut : `localhost:19092`) |
 | `REDPANDA_TOPIC_ACTIVITES` | Nom du topic Kafka |
 | `SLACK_WEBHOOK_URL` | URL du webhook Slack pour les notifications |
+| `SLACK_MODE` | `production` pour envoyer réellement, `dry_run` pour simuler |
 | `GOOGLE_MAPS_API_KEY` | Clé API Google Maps pour le géocodage |
 | `ADRESSE_ENTREPRISE` | Adresse du bureau pour le calcul des distances |
 
@@ -216,28 +224,13 @@ Ouvrir l'UI Kestra sur `http://localhost:8080`, importer les flows du dossier `k
 ### Via ligne de commande
 
 ```bash
-# Initialiser DuckDB
 python src/utils/initialiser_entrepot.py
-
-# Charger les données RH
 python src/ingestion/ingerer_donnees_rh.py
-
-# Générer les activités sportives
 python src/generation/generer_activites_sportives.py
-
-# Contrôler la qualité des données
 python src/qualite/controler_qualite_donnees.py
-
-# Géocoder les adresses
 python src/metier/geocoder_adresses.py
-
-# Appliquer les règles métier
 python src/metier/appliquer_regles_metier.py
-
-# Calculer les KPI
 python src/metier/calculer_indicateurs_kpi.py
-
-# Exporter vers PowerBI
 python src/export/exporter_donnees_powerbi.py
 ```
 
@@ -257,7 +250,7 @@ python src/export/exporter_donnees_powerbi.py
 | `geocoder_adresses.py` | Calcule les distances domicile-bureau avec cache local |
 | `appliquer_regles_metier.py` | Calcule l'éligibilité prime et wellness |
 | `calculer_indicateurs_kpi.py` | Produit les KPI Gold |
-| `exporter_donnees_powerbi.py` | Exporte les tables Gold en CSV/Parquet |
+| `exporter_donnees_powerbi.py` | Copie la base Gold vers warehouse_powerbi.duckdb |
 | `rejouer_historique.py` | Recalcule les KPI avec une nouvelle version de paramètres |
 
 ---
@@ -295,7 +288,7 @@ Condition :
 
 ### Paramètres modifiables
 
-Les seuils (taux de prime, distances max, seuil wellness) sont versionnés dans `silver.parametres_regles`. Le flow `02_rejeu_historique` permet de recalculer l'ensemble des KPI avec de nouveaux paramètres sans modifier le code.
+Les seuils (taux de prime, distances max, seuil wellness) sont versionnés dans `silver.parametres_regles`. Le flow `02_rejeu_historique` permet de recalculer l'ensemble des KPI avec de nouveaux paramètres sans modifier le code. Chaque version est conservée en base pour comparaison dans PowerBI.
 
 ---
 
@@ -304,19 +297,89 @@ Les seuils (taux de prime, distances max, seuil wellness) sont versionnés dans 
 ### Démo A — Changer le taux de prime
 
 1. Kestra → Flow `02_rejeu_historique` → `taux_prime = 0.025`
-2. KPI recalculés automatiquement
-3. Comparaison v1 (5 %) vs v2 (2,5 %) visible dans PowerBI après actualisation
+2. KPI recalculés automatiquement pour cette version
+3. PowerBI → **Actualiser** → nouvelle barre dans le graphique comparatif
+4. Les cartes affichent les KPI de la dernière version
 
 ### Démo B — Injecter une nouvelle activité
 
 1. Kestra → Flow `03_streaming_live` → Execute
 2. Redpanda reçoit l'événement
 3. Message Slack envoyé dans le channel
-4. PowerBI mis à jour après actualisation
+4. PowerBI → **Actualiser** → données mises à jour
 
 ---
 
-## 14. Services Docker
+## 14. Notifications Slack
+
+Chaque activité sportive injectée génère automatiquement un message Slack.
+
+### Format du message
+
+```
+Bravo Roger T. ! 3.9 km de marche réalisés 🚶 ("Marche avec de bonnes sensations")
+Belle sortie vélo Roger T. : 18.4 km parcourus 🚴
+Zen Roger T. ! 47 min de yoga pour recharger les batteries 🧘
+```
+
+### Caractéristiques
+
+- **Anonymisation RGPD** : prénom + initiale du nom uniquement
+- **Idempotence** : une activité déjà notifiée n'est jamais renvoyée
+- **Rate limiting** : délai entre les envois pour éviter le spam
+- **Mode dry run** : configurable via `.env` pour les tests sans envoi réel
+
+### Configuration
+
+```bash
+# Dans .env
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/xxx/xxx/xxx
+SLACK_MODE=production   # "production" pour envoyer réellement, "dry_run" pour simuler sans envoyer
+ADRESSE_ENTREPRISE=1362 Av. des Platanes, 34970 Lattes  # utilisée pour le calcul des distances domicile-bureau
+```
+
+### Déclenchement
+
+- **Automatique** : à la fin du flow 01 (pipeline complet)
+- **Manuel** : via le flow 03 (streaming live) pour la démonstration
+
+---
+
+## 15. Connexion PowerBI à DuckDB
+
+PowerBI se connecte directement à `data/warehouse_powerbi.duckdb` via un script Python en lecture seule — pas de fichiers CSV intermédiaires.
+
+### Script Python utilisé dans PowerBI
+
+```python
+import duckdb
+import pandas as pd
+
+conn = duckdb.connect(
+    r"C:\sport-data-solution-poc\data\warehouse_powerbi.duckdb",
+    read_only=True
+)
+
+kpi_financiers = conn.execute("SELECT * FROM gold.kpi_financiers").df()
+kpi_pratiques_sportives = conn.execute("SELECT * FROM gold.kpi_pratiques_sportives").df()
+anomalies = conn.execute("SELECT * FROM gold.anomalies").df()
+kpi_anomalies = conn.execute("SELECT * FROM gold.kpi_anomalies").df()
+
+conn.close()
+```
+
+### Actualisation des données
+
+Après chaque exécution du pipeline Kestra :
+```
+PowerBI → Accueil → Actualiser
+```
+
+`warehouse_powerbi.duckdb` est mis à jour automatiquement par `exporter_donnees_powerbi.py` à la fin de chaque flow.
+
+---
+
+## 16. Services Docker
 
 | Service | Image | Port | UI |
 |---|---|---|---|
@@ -328,20 +391,7 @@ Les seuils (taux de prime, distances max, seuil wellness) sont versionnés dans 
 
 ---
 
-## 15. Dashboard PowerBI
-
-Le fichier `docs/V1.pbix` contient les pages suivantes :
-
-1. Vue globale — KPI financiers et simulation des scénarios
-2. Activités sportives — répartition par sport, distances, durées
-3. Impact financier — coûts par version de paramètres
-4. Qualité & anomalies — tableau des anomalies avec gravité
-
-Rechargement des données : **Accueil → Actualiser** après chaque exécution du pipeline.
-
----
-
-## 16. Sécurité et RGPD
+## 17. Sécurité et RGPD
 
 - secrets externalisés dans `.env` (non versionné) ;
 - messages Slack anonymisés (prénom + initiale du nom) ;
@@ -351,19 +401,21 @@ Rechargement des données : **Accueil → Actualiser** après chaque exécution 
 
 ---
 
-## 17. Limites du POC
+## 18. Limites du POC
 
 - les activités sportives sont simulées (Faker) — en production, connexion à l'API Strava réelle ;
 - DuckDB est adapté au POC local — en production, migration vers PostgreSQL ou un entrepôt cloud ;
-- le géocodage utilise Google Maps API avec un cache local pour limiter les coûts.
+- le géocodage utilise Google Maps API avec un cache local pour limiter les coûts ;
+- PowerBI Desktop ne supporte pas les connexions ODBC DuckDB multiples — la connexion via script Python `read_only=True` contourne cette limitation.
 
 ---
 
-## 18. Évolutions futures
+## 19. Évolutions futures
 
 - connexion API Strava réelle ;
 - déploiement cloud (AWS / Azure) ;
 - monitoring avancé avec Grafana ;
 - connexion directe au SIRH (fin du fichier Excel) ;
 - authentification renforcée ;
+- migration DuckDB → PostgreSQL pour les connexions multi-utilisateurs ;
 - intégration Data Lake cloud.
